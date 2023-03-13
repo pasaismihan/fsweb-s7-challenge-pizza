@@ -1,18 +1,24 @@
 import React from "react";
 import logo from "../logo.svg";
-
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import {
-//   Form,
-//   FormGroup,
-//   Input,
-//   Label,
-//   Button,
-//   FormFeedback,
-// } from "reactstrap";
 import { Link } from "react-router-dom";
 
 export default function Order() {
+  const checkData = [
+    { id: "1", value: "Papperroni", status: true },
+    { id: "2", value: "Domates", status: false },
+    { id: "3", value: "Biber", status: false },
+    { id: "4", value: "Sosis", status: true },
+    { id: "5", value: "Mısır", status: true },
+    { id: "6", value: "Sucuk", status: false },
+    { id: "7", value: "Kanada Jambonu", status: false },
+    { id: "8", value: "Pastırma", status: false },
+    { id: "9", value: "Ananas", status: true },
+    { id: "10", value: "Tavuk Izgara", status: false },
+    { id: "11", value: "Jalepeno", status: true },
+    { id: "12", value: "Kabak", status: true },
+    { id: "13", value: "Soğan", status: false },
+    { id: "14", value: "Sarımsak", status: false },
+  ];
   return (
     <div>
       <div className="bg-red text-center grid place-items-center place-content-center">
@@ -57,19 +63,19 @@ export default function Order() {
               </h3>
               <div className="flex items-center text-zinc-500 font-mono">
                 <input type="radio" name="boyut" id="kucuk" />
-                <label for="kucuk" className="ml-3">
+                <label htmlFor="kucuk" className="ml-3">
                   Küçük
                 </label>
               </div>
               <div className="flex items-center my-4 text-zinc-500 font-mono">
                 <input type="radio" name="boyut" id="orta" />
-                <label for="orta" className="ml-3">
+                <label htmlFor="orta" className="ml-3">
                   Orta
                 </label>
               </div>
               <div className="flex items-center text-zinc-500 font-mono">
                 <input type="radio" name="boyut" id="buyuk" />
-                <label for="buyuk" className="ml-3">
+                <label htmlFor="buyuk" className="ml-3">
                   Büyük
                 </label>
               </div>
@@ -79,11 +85,8 @@ export default function Order() {
                 Hamur Seç <span className="text-red">*</span>
               </h3>
               <div>
-                <select
-                  data-te-select-init
-                  className="border-solid border-x-2 border-y font-bold font-sans"
-                >
-                  <option>Hamur Kalınlığı</option>
+                <select className="block w-full p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  <option disabled>Hamur Kalınlığı</option>
                   <option value="1">Standart</option>
                   <option value="2">Kalın</option>
                   <option value="3">İnce</option>
@@ -96,114 +99,62 @@ export default function Order() {
             <h3 className="text-zinc-500">
               En Fazla 10 malzeme seçebilirsiniz. 5₺
             </h3>
-            <div className="flex">
-              <div className="mt-4 mr-14">
-                <div className="mb-4">
-                  <input type="checkbox" id="pepperoni" name="pepperoni" />
-                  <label
-                    for="pepperoni"
-                    className="ml-4 font-bold text-zinc-600"
-                  >
-                    Pepperoni
+            <div className="grid grid-cols-3  mb-20 mt-4">
+              {checkData.map((item) => (
+                <div
+                  key={item.id}
+                  className="mt-4 font-bold text-zinc-500 hover:text-zinc-800"
+                >
+                  <input id={item.id} type="checkbox" value={item.value} />
+                  <label htmlFor={item.id} className="ml-4">
+                    {item.value}
                   </label>
                 </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="sosis" name="sosis" />
-                  <label for="sosis" className="ml-4 font-bold text-zinc-600">
-                    Sosis
-                  </label>
-                </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="jambon" name="jambon" />
-                  <label for="jambon" className="ml-4 font-bold text-zinc-600">
-                    Kanada Jambonu
-                  </label>
-                </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="izgara" name="izgara" />
-                  <label for="izgara" className="ml-4 font-bold text-zinc-600">
-                    Tavuk Izgara
-                  </label>
-                </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="sogan" name="sogan" />
-                  <label for="sogan" className="ml-4 font-bold text-zinc-600">
-                    Soğan
-                  </label>
-                </div>
-              </div>
-              <div className="mt-4 mr-20">
-                <div className="mb-4">
-                  <input type="checkbox" id="domates" name="domates" />
-                  <label for="domates" className="ml-4 font-bold text-zinc-600">
-                    Domates
-                  </label>
-                </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="misir" name="misir" />
-                  <label for="misir" className="ml-4 font-bold text-zinc-600">
-                    Mısır
-                  </label>
-                </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="sucuk" name="sucuk" />
-                  <label for="sucuk" className="ml-4 font-bold text-zinc-600">
-                    Sucuk
-                  </label>
-                </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="jalapeno" name="jalapeno" />
-                  <label
-                    for="jalapeno"
-                    className="ml-4 font-bold text-zinc-600"
-                  >
-                    Jalapeno
-                  </label>
-                </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="sarimsak" name="sarimsak" />
-                  <label
-                    for="sarimsak"
-                    className="ml-4 font-bold text-zinc-600"
-                  >
-                    Sarımsak
-                  </label>
-                </div>
-              </div>
-              <div className="mt-4">
-                <div className="mb-4">
-                  <input type="checkbox" id="biber" name="biber" />
-                  <label for="biber" className="ml-4 font-bold text-zinc-600">
-                    Biber
-                  </label>
-                </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="zeytin" name="zeytin" />
-                  <label for="zeytin" className="ml-4 font-bold text-zinc-600">
-                    Zeytin
-                  </label>
-                </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="ananas" name="ananas" />
-                  <label for="ananas" className="ml-4 font-bold text-zinc-600">
-                    Ananas
-                  </label>
-                </div>
-                <div className="mb-4">
-                  <input type="checkbox" id="kabak" name="kabak" />
-                  <label for="kabak" className="ml-4 font-bold text-zinc-600">
-                    Kabak
-                  </label>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-          <div className="mt-20 mb-20">
-            <h2>Sipariş Notu</h2>
-            <textarea
+          <div className="mt-20 ">
+            <h2 className="font-bold text-[20px]">Sipariş Notu</h2>
+            <input
               placeholder="siparişine eklemek istediğin bir not var mı ?"
-              className="border-solid border-2 border-zinc-200 w-full "
-            ></textarea>
+              className="border-solid border-2 border-zinc-200 w-full h-16 p-5 rounded-md mt-4"
+            />
+          </div>
+          <hr className="my-10 border-zinc-500" />
+          <div className="flex justify-between">
+            <div className="flex justify-start">
+              <button className="w-12 h-12 border rounded-md bg-yellow hover:bg-amber-200">
+                -
+              </button>
+              <div className="w-12 h-12 border rounded-md flex items-center justify-center">
+                1
+              </div>
+              <button className="w-12 h-12 border rounded-md bg-yellow hover:bg-amber-200">
+                +
+              </button>
+            </div>
+            <div className="mb-32">
+              <div className="border p-8 rounded-sm border-zinc-300 ">
+                <div className="text-lg font-bold font-Barlow mb-4 mr-32 ">
+                  Sipariş Toplamı
+                </div>
+                <div className="flex justify-between font-Barlow ">
+                  <div>Seçimler</div>
+                  <div>25.00₺</div>
+                </div>
+                <div className="flex justify-between font-Barlow font-bold text-red">
+                  <div>Toplam</div>
+                  <div>110.50₺</div>
+                </div>
+              </div>
+              <div>
+                <Link to="/Success">
+                  <button className="w-80 h-12 bg-yellow hover:border-y-4 hover:border-zinc-500  rounded-sm">
+                    Sipariş Ver
+                  </button>
+                </Link>
+              </div>
+            </div>
           </div>
         </form>
       </div>

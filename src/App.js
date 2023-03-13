@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Mainpage from "./components/Mainpage";
 import Order from "./components/Order";
 import Select from "./components/Select";
+import Success from "./components/Success";
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
         <Route path="/" element={<Mainpage />} />
         <Route path="/Order" element={<Order />} />
         <Route path="/Select" element={<Select />} />
+        <Route path="/Success" element={<Success />} />
       </Routes>
     </BrowserRouter>
   );

@@ -12,7 +12,7 @@ export default function Mainpage() {
           KOD ACIKTIRIR <br /> PIZZA, DOYURUR
         </p>
         <Link to="./Order">
-          <button className="bg-yellow px-12 py-3 rounded-full font-bold my-6 hover:text-white hover:bg-amber-500 active:bg-lime-700 active:text-white hover:pos">
+          <button className="bg-yellow px-12 py-3 rounded-full font-bold my-6 hover:text-white hover:bg-amber-500 active:bg-lime-700 active:text-white hover:pos ">
             ACIKTIM
           </button>
         </Link>
