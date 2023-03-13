@@ -6,14 +6,19 @@ export default function Order() {
   return (
     <div className="bg-red text-center grid place-items-center place-content-center">
       <img src={logo} className="pt-10 pb-8  "></img>
-      <div className="pb-6 mr-64">
-        <Link to="/" className="text-white">
-          Anasayfa -
+      <div className="pb-6 mr-64 text-[20px]">
+        <Link to="/" className="text-white hover:text-black no-underline">
+          Anasayfa
         </Link>
-        <Link to="" className="text-white">
-          Seçenekler -
+        <span className="text-white"> - </span>
+        <Link to="" className="text-white  hover:text-black no-underline">
+          Seçenekler
         </Link>
-        <Link to="" className="text-white">
+        <span className="text-white"> - </span>
+        <Link
+          to="/Select"
+          className="text-white  hover:text-black no-underline"
+        >
           Sipariş Oluştur
         </Link>
       </div>
