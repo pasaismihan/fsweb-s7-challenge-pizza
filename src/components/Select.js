@@ -1,28 +1,123 @@
-import React from "react";
 import logo from "../logo.svg";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import * as Yup from "yup";
+
+const pizzaFiyat = {
+  fiyat: 85.5,
+  yildiz: 4.9,
+  yorumSayisi: 200,
+};
+const checkData = [
+  { id: "1", name: "Papperroni", price: 5, check: false },
+  { id: "2", name: "Domates", price: 5, check: false },
+  { id: "3", name: "Biber", price: 5, check: false },
+  { id: "4", name: "Sosis", price: 5, check: false },
+  { id: "5", name: "Mısır", price: 5, check: false },
+  { id: "6", name: "Sucuk", price: 5, check: false },
+  { id: "7", name: "KanadaJambonu", price: 5, check: false },
+  { id: "8", name: "Pastırma", price: 5, check: false },
+  { id: "9", name: "Ananas", price: 5, check: false },
+  { id: "10", name: "TavukIzgara", price: 5, check: false },
+  { id: "11", name: "Jalepeno", price: 5, check: false },
+  { id: "12", name: "Kabak", price: 5, check: false },
+  { id: "13", name: "Soğan", price: 5, check: false },
+  { id: "14", name: "Sarımsak", price: 5, check: false },
+];
 
 export default function Order() {
-  const checkData = [
-    { id: "1", value: "Papperroni", status: true },
-    { id: "2", value: "Domates", status: false },
-    { id: "3", value: "Biber", status: false },
-    { id: "4", value: "Sosis", status: true },
-    { id: "5", value: "Mısır", status: true },
-    { id: "6", value: "Sucuk", status: false },
-    { id: "7", value: "Kanada Jambonu", status: false },
-    { id: "8", value: "Pastırma", status: false },
-    { id: "9", value: "Ananas", status: true },
-    { id: "10", value: "Tavuk Izgara", status: false },
-    { id: "11", value: "Jalepeno", status: true },
-    { id: "12", value: "Kabak", status: true },
-    { id: "13", value: "Soğan", status: false },
-    { id: "14", value: "Sarımsak", status: false },
-  ];
+  const [toplam, setToplam] = useState(1);
+  const [switched, setSwitched] = useState([...checkData]);
+  const [malzemeAdet, setMalzemeAdet] = useState(0);
+  const [disableButton, setDisableButton] = useState(true);
+  const [siparisSubmit, setSiparisSubmit] = useState({
+    isim: "",
+    hamurKalinligi: "",
+    pizzaBoyutu: "",
+    ekMalzemeler: [...checkData],
+    ucret: toplam * pizzaFiyat.fiyat + malzemeAdet * 5,
+  });
+  const [siparisSubmitError, setSiparisSubmitError] = useState({
+    isim: "",
+    hamurKalinligi: "",
+    pizzaBoyutu: "",
+    ekMalzemeler: "",
+  });
+
+  console.log(siparisSubmit);
+
+  const siparisSubmitSchema = Yup.object().shape({
+    isim: Yup.string().required("isim alani zorunludur"),
+    hamurKalinligi: Yup.string().required("bu alani bos birakmayin"),
+    pizzaBoyutu: Yup.string().required("Pizza boyutu secmek zorunludur"),
+    ekMalzemeler: Yup.array().max(10, "max 10 tane malzeme secmelisiniz"),
+  });
+
+  useEffect(() => {
+    siparisSubmitSchema
+      .isValid(siparisSubmit)
+      .then((valid) => setDisableButton(!valid));
+  }, [siparisSubmit]);
+
+  const artirma = (e) => {
+    e.preventDefault();
+    setToplam(toplam + 1);
+  };
+  const azaltma = (e) => {
+    e.preventDefault();
+    toplam > 1 ? setToplam(toplam - 1) : setToplam(1);
+  };
+
+  const changeHandler = (item, i) => {
+    const newMalzemeler = [...siparisSubmit.ekMalzemeler];
+    newMalzemeler[i].check = !newMalzemeler[i].check;
+    setSiparisSubmit({ ...siparisSubmit, ekMalzemeler: newMalzemeler });
+    Yup.reach(siparisSubmitSchema, "ekMalzemeler")
+      .validate(newMalzemeler)
+      .then(() => {
+        setSiparisSubmitError({ ...siparisSubmitError, ekMalzemeler: "" });
+      })
+      .catch((err) => {
+        setSiparisSubmitError({
+          ...siparisSubmitError,
+          ekMalzemeler: err.errors[0],
+        });
+      });
+  };
+  const formSubmit = (e) => {
+    e.preventDefault();
+    axios.post("https://reqres.in/api/orders", siparisSubmit).then((res) => {
+      console.log("login res data > ", res.data);
+    });
+  };
+
+  const formChange = (e) => {
+    Yup.reach(siparisSubmitSchema, e.target.name)
+      .validate(e.target.value)
+      .then(() => {
+        setSiparisSubmitError({ ...siparisSubmitError, [e.target.name]: "" });
+      })
+      .catch((err) => {
+        setSiparisSubmitError({
+          ...siparisSubmitError,
+          [e.target.name]: err.errors[0],
+        });
+      });
+    setSiparisSubmit({ ...siparisSubmit, [e.target.name]: e.target.value });
+  };
+
+  useEffect(() => {
+    const checkArray = switched.filter((item) => {
+      return item.check === true;
+    });
+    setMalzemeAdet(checkArray.length);
+  }, [switched]);
+
   return (
     <div>
       <div className="bg-red text-center grid place-items-center place-content-center">
-        <img src={logo} className="pt-10 pb-8  "></img>
+        <img src={logo} alt="logo" className="pt-10 pb-8  "></img>
         <div className="pb-6 mr-64 text-[20px]">
           <Link to="/" className="text-white hover:text-black no-underline">
             Anasayfa
@@ -37,14 +132,15 @@ export default function Order() {
           </Link>
         </div>
       </div>
-      <div className="w-1/3 m-auto">
-        <h1 className="font-bold font-sans text-[30px] text-left pt-10 text-zinc-700">
-          Position Absolute Acı Pizza
+      <div className="w-1/2 m-auto">
+        <h1 className="font-bold font-sans text-[30px] text-left pt-10 text-zinc-700 text-center">
+          Sipariş Menü
         </h1>
+
         <div className="flex items-center justify-between py-10">
-          <p className="font-bold text-[30px]">85.50₺</p>
-          <p className="ml-44 text-[19px] font-bold text-zinc-400">4.9</p>
-          <p className="text-[19px] text-zinc-400 font-bold">(200)</p>
+          <p className="font-bold text-[30px]">{`${pizzaFiyat.fiyat}₺`}</p>
+          <p className="ml-44 text-[19px] font-bold text-zinc-400">{`${pizzaFiyat.yildiz}`}</p>
+          <p className="text-[19px] text-zinc-400 font-bold">{`(${pizzaFiyat.yorumSayisi})`}</p>
         </div>
         <h2 className="text-zinc-400 font-Barlow text-[17px] font-bold">
           Frontent Dev olarak hala position:absolute kullanıyorsan bu çok acı
@@ -55,26 +151,47 @@ export default function Order() {
           lezzetli bir yemektir. Küçük bir pizzaya bazen pizetta denir.
         </h2>
 
-        <form>
+        <form onSubmit={formSubmit}>
           <div className="flex justify-between">
             <div>
               <h3 className="font-bold text-[18px] mt-10 mb-4">
                 Boyut Seç <span className="text-red">*</span>
               </h3>
               <div className="flex items-center text-zinc-500 font-mono">
-                <input type="radio" name="boyut" id="kucuk" />
+                <input
+                  type="radio"
+                  id="kucuk"
+                  onChange={formChange}
+                  value="kucuk"
+                  name="pizzaBoyutu"
+                  invalid={siparisSubmitError.pizzaBoyutu}
+                />
                 <label htmlFor="kucuk" className="ml-3">
                   Küçük
                 </label>
               </div>
               <div className="flex items-center my-4 text-zinc-500 font-mono">
-                <input type="radio" name="boyut" id="orta" />
+                <input
+                  type="radio"
+                  name="pizzaBoyutu"
+                  id="orta"
+                  onChange={formChange}
+                  value="orta"
+                  invalid={siparisSubmitError.pizzaBoyutu}
+                />
                 <label htmlFor="orta" className="ml-3">
                   Orta
                 </label>
               </div>
               <div className="flex items-center text-zinc-500 font-mono">
-                <input type="radio" name="boyut" id="buyuk" />
+                <input
+                  type="radio"
+                  name="pizzaBoyutu"
+                  id="buyuk"
+                  onChange={formChange}
+                  value="buyuk"
+                  invalid={siparisSubmitError.pizzaBoyutu}
+                />
                 <label htmlFor="buyuk" className="ml-3">
                   Büyük
                 </label>
@@ -85,11 +202,16 @@ export default function Order() {
                 Hamur Seç <span className="text-red">*</span>
               </h3>
               <div>
-                <select className="block w-full p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                  <option disabled>Hamur Kalınlığı</option>
-                  <option value="1">Standart</option>
-                  <option value="2">Kalın</option>
-                  <option value="3">İnce</option>
+                <select
+                  name="hamurKalinligi"
+                  onChange={formChange}
+                  invalid={siparisSubmitError.hamurKalinligi}
+                  className="block w-full p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option>Hamur Kalınlığı</option>
+                  <option value="standart">Standart</option>
+                  <option value="kalın">Kalın</option>
+                  <option value="ince">İnce</option>
                 </select>
               </div>
             </div>
@@ -97,17 +219,22 @@ export default function Order() {
           <div className="mt-16">
             <h2 className="font-bold text-[20px] my-4">Ek Malzemeler</h2>
             <h3 className="text-zinc-500">
-              En Fazla 10 malzeme seçebilirsiniz. 5₺
+              En Fazla 5 malzeme seçebilirsiniz. 5₺
             </h3>
             <div className="grid grid-cols-3  mb-20 mt-4">
-              {checkData.map((item) => (
+              {siparisSubmit.ekMalzemeler.map((item, i) => (
                 <div
                   key={item.id}
                   className="mt-4 font-bold text-zinc-500 hover:text-zinc-800"
                 >
-                  <input id={item.id} type="checkbox" value={item.value} />
+                  <input
+                    id={item.id}
+                    type="checkbox"
+                    checked={item.check}
+                    onChange={() => changeHandler(item, i)}
+                  />
                   <label htmlFor={item.id} className="ml-4">
-                    {item.value}
+                    {item.name}
                   </label>
                 </div>
               ))}
@@ -117,19 +244,37 @@ export default function Order() {
             <h2 className="font-bold text-[20px]">Sipariş Notu</h2>
             <input
               placeholder="siparişine eklemek istediğin bir not var mı ?"
-              className="border-solid border-2 border-zinc-200 w-full h-16 p-5 rounded-md mt-4"
+              className="border-solid border-2 border-zinc-200 w-full h-24 p-5 rounded-md mt-4"
             />
           </div>
           <hr className="my-10 border-zinc-500" />
+          <div className="mt-12   ">
+            <h2 className="font-bold text-[20px]">İsim Bilgisi</h2>
+            <input
+              placeholder="Lütfen İsminizi Giriniz..."
+              className="border-solid border-2 border-zinc-200 w-1/2 h-16 p-5 rounded-md mt-4"
+              value={siparisSubmit.isim}
+              onChange={formChange}
+              name="isim"
+              invalid={siparisSubmitError.isim}
+            />
+          </div>
+          <hr className="my-10 border-zinc-500 border-1" />
           <div className="flex justify-between">
             <div className="flex justify-start">
-              <button className="w-12 h-12 border rounded-md bg-yellow hover:bg-amber-200">
+              <button
+                onClick={azaltma}
+                className="w-12 h-12 border rounded-md bg-yellow hover:bg-amber-200"
+              >
                 -
               </button>
               <div className="w-12 h-12 border rounded-md flex items-center justify-center">
-                1
+                {toplam}
               </div>
-              <button className="w-12 h-12 border rounded-md bg-yellow hover:bg-amber-200">
+              <button
+                onClick={artirma}
+                className="w-12 h-12 border rounded-md bg-yellow hover:bg-amber-200"
+              >
                 +
               </button>
             </div>
@@ -140,16 +285,20 @@ export default function Order() {
                 </div>
                 <div className="flex justify-between font-Barlow ">
                   <div>Seçimler</div>
-                  <div>25.00₺</div>
+                  <div>{malzemeAdet * 5}₺</div>
                 </div>
                 <div className="flex justify-between font-Barlow font-bold text-red">
                   <div>Toplam</div>
-                  <div>110.50₺</div>
+                  <div>{toplam * pizzaFiyat.fiyat + malzemeAdet * 5}</div>
                 </div>
               </div>
               <div>
                 <Link to="/Success">
-                  <button className="w-80 h-12 bg-yellow hover:border-y-4 hover:border-zinc-500  rounded-sm">
+                  <button
+                    className="w-80 h-12 bg-yellow hover:border-y-4 hover:border-zinc-500  rounded-sm"
+                    type="submit"
+                    // disabled={disableButton}
+                  >
                     Sipariş Ver
                   </button>
                 </Link>

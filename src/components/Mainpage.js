@@ -1,13 +1,12 @@
 import React from "react";
 import logo from "../logo.svg";
 import { Link } from "react-router-dom";
-import Order from "./Order";
 
 export default function Mainpage() {
   return (
     <div className=" bg-[url('../Assets/mvp-banner.png')] h-screen w-screen bg-cover bg-center ">
       <div className="grid place-items-center  place-content-center">
-        <img src={logo} className="pt-24 pb-8"></img>
+        <img src={logo} alt="teknolojik yemekler" className="pt-24 pb-8"></img>
         <p className="text-[50px] text-center text-white font-extralight ">
           KOD ACIKTIRIR <br /> PIZZA, DOYURUR
         </p>
