@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Mainpage from "./components/Mainpage";
 import Order from "./components/Order";
-import Select from "./components/Select";
 import Success from "./components/Success";
 
 const App = () => {
@@ -11,7 +10,6 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Mainpage />} />
         <Route path="/Order" element={<Order />} />
-        <Route path="/Select" element={<Select />} />
         <Route path="/Success" element={<Success />} />
       </Routes>
     </BrowserRouter>
